@@ -16,7 +16,7 @@ jobs:
         switches: -avzr --delete --exclude=".git" --exclude=".github"
         path: /
         remote_path: /home/roja5563/public_html/api.rojaur
-        remote_host: rojaur.com
+        remote_host: 194.163.41.48
         remote_user: roja5563
         remote_key: ${{ secrets.DEPLOY_KEY }}
         remote_port: 65002
