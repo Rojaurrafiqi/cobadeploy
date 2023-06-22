@@ -1,21 +1,32 @@
+name: Deploy to Server
+
 on:
   push:
-    branches: [ main ]
-name: 🚀 Deploy website on push
-jobs:
-  web-deploy:
-    name: 🎉 Auto Deploy
-    runs-on: ubuntu-latest
-    steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v2.305.0
+    branches:
+      - main
 
-    - name: 📂 Sync files
-      uses: contention/rsync-deployments@v2.305.0
-      with:
-        switches: -avzr --delete --exclude=".git" --exclude=".github"
-        path: /
-        remote_path: /home/roja5563/public_html/api.rojaur
-        remote_host: 194.163.41.48
-        remote_user: roja5563
-        remote_key: ${{ secrets.DEPLOY_KEY }}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install rsync
+      run: sudo apt-get install -y rsync
+
+    - name: Deploy to Server
+      run: |
+        rsync ${{ env.SWITCHES }} \
+          --exclude=".git" \
+          --exclude=".github" \
+          ${{ env.PATH }} \
+          ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}:${{ env.REMOTE_PATH }}
+      env:
+        SWITCHES: -avzr --delete
+        PATH: /
+        REMOTE_PATH: /home/roja5563/public_html/api.rojaur
+        REMOTE_HOST: 194.163.41.48
+        REMOTE_USER: roja5563
+        REMOTE_KEY: ${{ secrets.DEPLOY_KEY }}
